@@ -1,0 +1,1 @@
+file = open('dane2.txt')
