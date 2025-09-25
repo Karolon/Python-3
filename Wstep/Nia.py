@@ -12,11 +12,14 @@ def ifOrdered(n):
 
 counter = 0
 counter2 = 0
+counter3 = 0
 for d in data:
     if d[0] == d[-1]:
         counter2 += 1
-    
+    d_decimal = str(int(d,8))
+    if d_decimal[0] == d_decimal[-1]:
+        counter3 += 1
     counter += ifOrdered(d)
 
-print(counter)
+print(counter, counter2, counter3)
 
