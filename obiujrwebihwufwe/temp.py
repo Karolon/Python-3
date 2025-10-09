@@ -22,16 +22,24 @@ for d in data:
 
 print(counter)
 
+print(sum([1 if d > sum(data)/len(data) else 0 for d in data]))
+
 #c
-old_d = data[1]
 okresC = []
 okresC_tmp = []
 for i in range(1,len(data)):
-    if data[i] >= data[i-1]:
-        okresC_tmp.append(i)
+    if data[i] > data[i-1]:
+        okresC_tmp.append(i-1)
     else:
         del okresC_tmp[:]
     if len(okresC) < len(okresC_tmp):
-        okresC = []+okresC_tmp
+        okresC = []+okresC_tmp+[i]
 
-print(okresC)
+print(len(okresC), okresC[0], okresC[-1], okresC)
+
+# tmp = 0
+# starting, ending, length = 0, 0, 0
+# for index, d in enumerate(data[:-1]):
+#     if d < data[index + 1]:
+#         if tmp > length:
+
