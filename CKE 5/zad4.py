@@ -32,6 +32,13 @@ def HalfPrime(n):
 
     return counter == 0
 
+for d in data:
+    d = int(d,2)
+    for i in range(2,d):
+        if d % i == 0:
+            if Prime(i) and Prime(d//i):
+                ile3 += 1
+                break
 
 answer1 = []
 counter2 = 0
