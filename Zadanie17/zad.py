@@ -37,6 +37,7 @@ for d in data:
 
         if farthestPointsDistant < ((x_ - x)**2 + (y_ - y)**2)**1/2:
             farthestPoints = [[x,y],[x_, y_]]
+            farthestPointsDistant = ((x_ - x)**2 + (y_ - y)**2)**1/2
 
     if abs(x) > 5000 or abs(y) > 5000:
         counterOutside += 1
@@ -50,6 +51,6 @@ fileAns = open('wyniki.txt', 'w')
 
 print('1', counter1, file = fileAns)
 print('2', counter2, file = fileAns)
-print('3', farthestPoints, file = fileAns)
+print('3', farthestPoints, farthestPointsDistant, file = fileAns)
 print(f'4 w środku {counterInside}\nna {counterOn}\npoza {counterOutside}', file = fileAns)
 
