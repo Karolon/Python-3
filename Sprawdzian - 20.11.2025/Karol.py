@@ -98,3 +98,4 @@ def binary_search(list, szukana):
 
     return 'nie ma'
 
+file2.close()
