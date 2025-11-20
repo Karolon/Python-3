@@ -20,7 +20,7 @@ for i, d in enumerate(data):
         line = i + 1
         letter_dif = tmp_dif
 
-print('Zad 1', line, file=file_ans)
+print('Zad 1\n', line, file=file_ans)
 #2
 def amstrong(n):
     suma = 0
@@ -44,7 +44,7 @@ for i in range(len(data)):
     else:
         tmp_start, tmp_end, tmp_len = -1, -1, 0
 
-print(f'Zad 2\nDługość{ciog_len}\nStart{ciog_start}\nKoniec{ciog_end}', file=file_ans)
+print(f'Zad 2\nDługość = {ciog_len}\nStart = {ciog_start}\nKoniec = {ciog_end}', file=file_ans)
 
 #3
 answer = []
