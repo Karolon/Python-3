@@ -16,7 +16,12 @@ def startGame():
     start_screen.pack_forget()
     game_screen.pack(side=tk.TOP, expand=True)
 
-
+def loopAdditions():
+    if root.state() == "iconic":
+        buildings.minimiseAllWindows()
+    elif root.state() == "normal":
+        buildings.openAllWindows()
+    root.after(16, loopAdditions)
 
 #Main screen
 start_screen = tk.Frame(root, width=100, height=100)
@@ -30,11 +35,9 @@ game_screen.pack_forget()
 start_gameButton = tk.Button(start_screen, text="Start", command=startGame)
 start_gameButton.place(width=100 ,height=50, x=0, y=25)
 
-buy_buildingsButton = tk.Button(game_screen, text="Buy", command=buildings.newBuilding)
+buy_buildingsButton = tk.Button(game_screen, text="Buy", command=lambda:buildings.newBuilding(root))
 buy_buildingsButton.place(width=100 ,height=50, x=0, y=50)
 
 
-# while True:
-#     root.update()
-
+root.after(0, loopAdditions)
 root.mainloop()
