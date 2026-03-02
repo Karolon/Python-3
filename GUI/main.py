@@ -7,6 +7,7 @@ root.geometry("500x500")
 root.minsize(100, 100)
 root.update()
 
+
 win_height = root.winfo_height()
 win_width = root.winfo_width()
 
@@ -23,6 +24,15 @@ def loopAdditions():
         buildings.openAllWindows()
     root.after(16, loopAdditions)
 
+#change use of maximise window
+def moveUpWindows(a):
+    if root.state() == 'zoomed':
+        root.state("normal")
+        buildings.moveAllWinToFirstPlan()
+        print('dadwa')
+
+root.bind("<Configure>", moveUpWindows)
+
 #Main screen
 start_screen = tk.Frame(root, width=100, height=100)
 start_screen.pack(side=tk.TOP, expand=True)
@@ -37,6 +47,7 @@ start_gameButton.place(width=100 ,height=50, x=0, y=25)
 
 buy_buildingsButton = tk.Button(game_screen, text="Buy", command=lambda:buildings.newBuilding(root))
 buy_buildingsButton.place(width=100 ,height=50, x=0, y=50)
+
 
 
 root.after(0, loopAdditions)
