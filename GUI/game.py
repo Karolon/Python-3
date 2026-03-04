@@ -19,6 +19,8 @@ class Buildings:
         #preloading images
         self.house_image = tk.PhotoImage(file = "tall_house.png")
         self.house_image_disabled = tk.PhotoImage(file = "tall_house_disabled.png")
+        #game
+        self.population = 0
     
     def newBuilding(self, root):
         
@@ -27,7 +29,6 @@ class Buildings:
             placed_flag = True
             self.placed_buildingList.append(house_win)
             background_label.config(image=self.house_image)
-            print('placed')
 
         def moveBuilding():
             nonlocal placed_flag, background_label
@@ -35,14 +36,12 @@ class Buildings:
                 placed_flag = False
                 background_label.config(image=self.house_image_disabled)
                 self.placed_buildingList.remove(house_win)
-                print('move')
         
         def move(a):
-            nonlocal temp_x, temp_y
             x = min(max(a.x_root-self.cursor_x-8, -8), self.screen_width-house_win.winfo_width())
             y = min(max(a.y_root-self.cursor_y-31, 0), self.screen_height-house_win.winfo_height()-self.taskbarHeight)
             x, y = checkCollision(x, y, 0)
-            house_win.geometry(f'132x279+{x}+{y}')
+            house_win.geometry(f'+{x}+{y}')
             
         def start_moving(a):
             self.cursor_x  = a.x
@@ -52,13 +51,19 @@ class Buildings:
         def stop_moving(a):
             if self.screen_height - house_win.winfo_height() - self.taskbarHeight - 8 <= house_win.winfo_y():
                 placeBuilding()
-        
+
+        def sell():
+            self.windowList.remove(house_win)
+            if placed_flag:
+                self.placed_buildingList.remove(house_win)
+            house_win.destroy()
+
         def checkCollision(x, y, depth):
             #limiter of recursion starts from 0
             if depth > 1:
-                return
+                return None
             #flags
-            yFlag, xFlagL, xflagR = False, False, False
+            yFlag, xFlagL, xFlagR = False, False, False
             new_x = x
             #height of the moving window
             height = house_win.winfo_height()
@@ -80,15 +85,12 @@ class Buildings:
                     #check for collisions from the right side
                     if Left >= bL and Left <= bR:
                         new_x= bR + 1
-                        xflagR = True
+                        xFlagR = True
                     #check if it is actualy from top
-                    if (house_win.winfo_y() + height < building.winfo_y() and (xFlagL or xflagR)) or (xflagR and xFlagL):
+                    if (house_win.winfo_y() + height < building.winfo_y() and (xFlagL or xFlagR)) or (xFlagR and xFlagL):
                         yFlag = True
                         y = min(y, building.winfo_y() - height -1)
-                    #
-                    # if Left == bL:
-                    #     x = house_win.winfo_x() 
-                    #     xFlagL, xflagR = True, True
+
             
             #checks if the new position is viable 
             if not yFlag:
@@ -98,17 +100,15 @@ class Buildings:
                         x = x_ 
                         y = y_
             
-            if xFlagL and not xflagR and not yFlag:
+            if xFlagL and not xFlagR and not yFlag:
                 x = new_x
-            elif xflagR and not xFlagL and not yFlag:
+            elif xFlagR and not xFlagL and not yFlag:
                 x = new_x
                 
 
-            return(x, y)
-                
-        
-        temp_x = 0
-        temp_y = 0
+            return x, y
+
+
         placed_flag = False
         #set up window
         house_win=tk.Toplevel(root)
@@ -123,7 +123,7 @@ class Buildings:
         #backgroud image
         background_label = tk.Label(house_win, image = self.house_image_disabled, bg="white")
         background_label.place(x = 0, y = 0)
-        
+        house_win.protocol("WM_DELETE_WINDOW", sell)
         self.windowList.append(house_win)
         
     def openAllWindows(self):
