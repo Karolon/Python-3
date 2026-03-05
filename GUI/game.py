@@ -3,7 +3,7 @@ import tkinter as tk
 class Buildings:
     def __init__(self):
         self.cursor_x, self.cursor_y = 0, 0 
-        self.windowList = []
+        self.buildingList = []
         self.placed_buildingList = []
         #temp window for getting screen data
         temp =tk.Tk()
@@ -57,7 +57,7 @@ class Buildings:
 
         def sell():
             nonlocal residents
-            self.windowList.remove(house_win)
+            self.buildingList.remove(house_win)
             if placed_flag:
                 self.placed_buildingList.remove(house_win)
                 self.population -= residents
@@ -129,16 +129,6 @@ class Buildings:
         background_label = tk.Label(house_win, image = self.house_image_disabled, bg="white")
         background_label.place(x = 0, y = 0)
         house_win.protocol("WM_DELETE_WINDOW", sell)
-        self.windowList.append(house_win)
         
-    def openAllWindows(self):
-        for window in self.windowList:
-            window.state("normal")
+        self.buildingList.append(house_win)
         
-    def minimiseAllWindows(self):
-        for window in self.windowList:
-            window.iconify()
-    
-    def moveAllWinToFirstPlan(self):
-        for window in self.windowList:
-            window.lift()

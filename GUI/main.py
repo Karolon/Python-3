@@ -1,59 +1,96 @@
 import tkinter as tk
 from game import Buildings
+from info_window import infoWindow
 
 #game
 buy_start_price = 100
 buy_multiplier = 0
-buy_price = lambda: buy_start_price * (1 + buy_multiplier * 0.2**buy_multiplier)
-money = 100
 money_multiplier = 0.2
+buy_price = lambda: buy_start_price * (1 + buy_multiplier * 0.2**buy_multiplier)
+#how many frames to update (60/x)
 frame_update = 2
+#counter
+money = 100
 
+#inisilise root
 root = tk.Tk()
 root.title("Graj")
 root.geometry("500x500")
 root.minsize(100, 100)
 root.update()
 
-
+#constats so i wont need to get it every time
 win_height = root.winfo_height()
 win_width = root.winfo_width()
 
+#bind my classes
 buildings = Buildings()
+population_info = infoWindow(root, "Population:")
+population_info.snapTo(root.winfo_x, root.winfo_y)
+money_info = infoWindow(root, "Money:")
+money_info.snapTo(root.winfo_x, root.winfo_y, y_offset=63)
 
-def startGame():
-    start_screen.pack_forget()
-    game_screen.pack(side=tk.TOP, expand=True)
-
-def gameLoop(frame = 0):
-    global money
-    if root.state() == "iconic":
-        buildings.minimiseAllWindows()
-    elif root.state() == "normal":
-        buildings.openAllWindows()
-
-    money_label.config(text=f"Money: {int(money)}")
-    population_label.config(text=f"Population: {buildings.population}")
-    if frame % frame_update == 0:
-        money += money_multiplier * buildings.population
-
-
-    root.after(16, lambda:gameLoop(frame+1 if frame < 60 else 0))
+#globals so that funcion work
+hidden_windows = []
 
 
 #change use of maximise window
-def moveUpWindows(a):
+def moveUpWindows(a = any):
     if root.state() == 'zoomed':
         root.state("normal")
-        buildings.moveAllWinToFirstPlan()
+        windowList = root.tk.call("wm", "stackorder", ".")
+        for window in windowList:
+            win = root.nametowidget(window)
+            win.lift(root)
+            
+def minimiseWindows(a = any):
+    windowList = root.tk.call("wm", "stackorder", ".")
+    for window in windowList:
+        win = root.nametowidget(window)
+        hidden_windows.append(win)
+        win.iconify()
+        
+def maximiseWindows(a = any):  
+    for win in buildings.buildingList:
+        win.deiconify()
+    population_info.window.deiconify()
+    money_info.window.deiconify()
+
+def windowMoved(a = any):
+    moveUpWindows()
+    money_info.updatePos()
+    population_info.updatePos()
+    
+    
+def startGame():
+    game_screen.pack(side=tk.TOP, expand=True)
+    start_screen.destroy()
+    population_info.set()
+    money_info.set()
+    
+def gameLoop(frame = 0):
+    global money, testInfo
+
+    money_info.update_value(int(money))
+    population_info.update_value(buildings.population)
+    if frame % frame_update == 0:
+        money += money_multiplier * buildings.population
+    
+    
+    root.after(16, lambda:gameLoop(frame+1 if frame < 60 else 0))
 
 def buyBuilding():
     global money, buy_multiplier
-    money -= buy_price()
-    buy_multiplier += 1
-    buildings.newBuilding(root)
+    if money >= buy_price():
+        money -= buy_price()
+        buy_multiplier += 1
+        buildings.newBuilding(root)
 
-root.bind("<Configure>", moveUpWindows)
+#change state of children with root
+root.bind("<Configure>", windowMoved)
+root.bind("<Unmap>", minimiseWindows)
+root.bind("<Map>", maximiseWindows)
+
 
 #Main screen
 start_screen = tk.Frame(root, width=100, height=100)
@@ -62,16 +99,10 @@ start_screen.pack(side=tk.TOP, expand=True)
 start_gameButton = tk.Button(start_screen, text="Start", command=startGame)
 start_gameButton.place(width=100 ,height=50, x=0, y=25)
 
-#the other screen
+#game screen
 game_screen = tk.Frame(root, width=root.winfo_width(), height=root.winfo_height())
 game_screen.pack(side=tk.TOP, expand=True)
 game_screen.pack_forget()
-
-money_label = tk.Label(game_screen, text="Money: 0")
-money_label.grid(row=0, column=0)
-
-population_label = tk.Label(game_screen, text="Population")
-population_label.grid(row=1, column=0)
 
 buy_buildingsButton = tk.Button(game_screen, text="Buy", command=buyBuilding, width=10, height=2)
 buy_buildingsButton.grid(row=2, column=0, rowspan=2, pady=10)
