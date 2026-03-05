@@ -22,20 +22,23 @@ class Buildings:
         #game
         self.population = 0
     
-    def newBuilding(self, root):
-        
+    def newBuilding(self, root, residents = 5):
+
+
         def placeBuilding():
-            nonlocal placed_flag, background_label
+            nonlocal placed_flag, background_label, residents
             placed_flag = True
             self.placed_buildingList.append(house_win)
             background_label.config(image=self.house_image)
+            self.population += residents
 
         def moveBuilding():
-            nonlocal placed_flag, background_label
+            nonlocal placed_flag, background_label, residents
             if placed_flag:
                 placed_flag = False
                 background_label.config(image=self.house_image_disabled)
                 self.placed_buildingList.remove(house_win)
+                self.population -= residents
         
         def move(a):
             x = min(max(a.x_root-self.cursor_x-8, -8), self.screen_width-house_win.winfo_width())
@@ -53,9 +56,11 @@ class Buildings:
                 placeBuilding()
 
         def sell():
+            nonlocal residents
             self.windowList.remove(house_win)
             if placed_flag:
                 self.placed_buildingList.remove(house_win)
+                self.population -= residents
             house_win.destroy()
 
         def checkCollision(x, y, depth):
