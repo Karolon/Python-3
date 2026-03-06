@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class Buildings:
     def __init__(self):
@@ -19,6 +20,7 @@ class Buildings:
         #preloading images
         self.house_image = tk.PhotoImage(file = "tall_house.png")
         self.house_image_disabled = tk.PhotoImage(file = "tall_house_disabled.png")
+        self.blank = tk.PhotoImage(file="blank.png")
         #game
         self.population = 0
     
@@ -56,12 +58,13 @@ class Buildings:
                 placeBuilding()
 
         def sell():
-            nonlocal residents
-            self.buildingList.remove(house_win)
-            if placed_flag:
-                self.placed_buildingList.remove(house_win)
-                self.population -= residents
-            house_win.destroy()
+            if messagebox.askyesno("Sell Building", "Are you sure you want to sell this building?\nYou won`t get the money back"):
+                nonlocal residents
+                self.buildingList.remove(house_win)
+                if placed_flag:
+                    self.placed_buildingList.remove(house_win)
+                    self.population -= residents
+                house_win.destroy()
 
         def checkCollision(x, y, depth):
             #limiter of recursion starts from 0
@@ -117,10 +120,11 @@ class Buildings:
         placed_flag = False
         #set up window
         house_win=tk.Toplevel(root)
-        house_win.geometry("132x279")
+        house_win.geometry("145x279")
         house_win.title("House")
         house_win.resizable(False, False)
         house_win.wm_attributes("-transparentcolor", "white")
+        house_win.iconphoto(False, self.blank)
         #binds
         house_win.bind("<Button-1>", start_moving)
         house_win.bind("<B1-Motion>", move)
