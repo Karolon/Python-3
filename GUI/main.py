@@ -15,7 +15,7 @@ money_calculator = lambda: buildings.population * (money_multiplier + 0.05*upgra
 #how many frames to update (60/x)
 frame_update = 2
 #counter
-money = 100000000
+money = 10000000
 game_level = 0
 population_milestones = [0] + [i**2*7+20 for i in range(30)]#[0, 50, 130, 230]
 
@@ -49,15 +49,17 @@ def upgradeResidents():
     global money
     if money >= 100*2**(buildings.resident_upgrade_level+1):
         money -= 100*2**(buildings.resident_upgrade_level+1)
-        buildings.population += sum(h.LEVEL for h in buildings.buildingList) 
+        buildings.population += sum(h.LEVEL for h in buildings.placed_buildingList)
         buildings.resident_upgrade_level += 1
         return True
 
 def upgradeBuildingPrice():
     global money, upgrade_cheaper_buildings_level
     if money >= 100*3**(upgrade_cheaper_buildings_level+1):
-        money -= 100*3**(upgrade_cheaper_buildings_level+1)
+        money -= 100*3**(+1)
         upgrade_cheaper_buildings_level += 1
+        for i, b in enumerate(buttonList):
+            b.update_value(int(buy_price(i+1)))
         return True
 
 def upgradeProfit():
