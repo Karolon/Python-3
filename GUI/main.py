@@ -19,6 +19,7 @@ money = 100000000
 game_level = 0
 population_milestones = [0] + [i**2*7+20 for i in range(30)]#[0, 50, 130, 230]
 
+game_started = False
 buttonList = []
 
 #inisilise root
@@ -91,24 +92,33 @@ def minimiseWindows(a = any):
         hidden_windows.append(win)
         win.iconify()
         
-def maximiseWindows(a = any):  
+def maximiseWindows(a = any):
+    global game_started  
     for win in buildings.buildingList:
         win.deiconify()
-    population_info.window.deiconify()
-    money_info.window.deiconify()
+    if game_started:
+        population_info.window.deiconify()
+        money_info.window.deiconify()
 
 def windowMoved(a = any):
+    global game_started  
     moveUpWindows()
-    money_info.updatePos()
-    population_info.updatePos()
+    if game_started:
+        money_info.updatePos()
+        population_info.updatePos()
     for bButton in buttonList:
         bButton.updatePos()
     
 def startGame():
+    global game_started  
     game_screen.pack(side=tk.TOP, expand=True)
     start_screen.destroy()
     population_info.set()
     money_info.set()
+    upgrade_profit.set()
+    upgrade_residents.set()
+    upgrade_cheaper_buildings.set()
+    game_started = True
     root.after(0, gameLoop)
     
     
@@ -164,13 +174,10 @@ game_screen.pack_forget()
 #upgrades
 upgrade_residents = UpgradeWindow(root, "Resident upgrade", upgradeResidents)
 upgrade_residents.snapTo(lambda: 0, lambda: 130)
-upgrade_residents.set()
 upgrade_profit = UpgradeWindow(root, "Profit upgrade", upgradeProfit)
 upgrade_profit.snapTo(lambda: 0, lambda: 165)
-upgrade_profit.set()
 upgrade_cheaper_buildings = UpgradeWindow(root, "Cheap bricks upgrade", upgradeBuildingPrice)
 upgrade_cheaper_buildings.snapTo(lambda: 0, lambda: 200)
-upgrade_cheaper_buildings.set()
 
 
 

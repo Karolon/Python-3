@@ -98,6 +98,7 @@ class Buildings:
             #flags
             yFlag, xFlagL, xFlagR = False, False, False
             new_x = x
+            new_y = y
             #height of the moving window
             height = house_win.winfo_height()
             #The moving building`s bottom left and right x cordinates and bottom y cordinates
@@ -112,34 +113,46 @@ class Buildings:
                     bL = building.winfo_x()
                     bR = bL + building.winfo_width()
                     #check for collision from the left side
-                    if Right >= bL and Right <= bR:
+                    if Right > bL and Right < bR:
                         xFlagL = True
                         new_x = bL - house_win.winfo_width() - 1
                     #check for collisions from the right side
                     if Left >= bL and Left <= bR:
                         new_x= bR + 1
                         xFlagR = True
-                    #check if it is actualy from top
-                    if (house_win.winfo_y() + height < building.winfo_y() and (xFlagL or xFlagR)) or (xFlagR and xFlagL):
+                    #check if it is actualy only from top
+                    #print(xFlagL or xFlagR)
+                    if (((xFlagL or xFlagR) and house_win.winfo_y() + height -1 < building.winfo_y()) or (xFlagL and xFlagR)) and not yFlag:
                         yFlag = True
-                        y = min(y, building.winfo_y() - height -1)
-
+                        new_y = building.winfo_y() - height -1
+                        
+            print(xFlagL, xFlagR, yFlag, depth)
             
             #checks if the new position is viable 
             if not yFlag:
-                if new_x != x:
-                    x_, y_ = checkCollision(new_x, y, depth+1)
-                    if new_x != x_ or y_ != y:
+                if new_x != x or new_y != y:
+                    x_, y_ = checkCollision(new_x, new_y, depth+1)
+                    if new_x != x_ or y_ != new_y:
                         x = x_ 
-                        y = y_
+                        y = y_ 
+            # elif new_y != y:
+            #     x_, y_ = checkCollision(new_x, new_y, depth+1)
+            #     if new_x != x_ or y_ != new_y:
+            #         #x = x_ 
+            #         y = max(y_, new_y) 
             
-            if xFlagL and not xFlagR and not yFlag:
+            
+            if xFlagL and not xFlagR and not yFlag: #from left
                 x = new_x
-            elif xFlagR and not xFlagL and not yFlag:
+            elif xFlagR and not xFlagL and not yFlag: #from right
                 x = new_x
-                
-
+            
+            
+            if yFlag:
+                y = new_y
+        
             return x, y
+        
 
         #FOR TRACING PUTPOSES
         placed_flag = False
