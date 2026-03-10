@@ -171,18 +171,18 @@ class Buildings:
         house = tk.Canvas(house_win, width=132, height=148+level*72, bg="white")
         house.create_image(0 , 0, anchor=tk.NW, image=self.top)
         for i in range(level):
-            house.create_image(0, 48+72*(i), anchor=tk.NW, image=self.middle)
+            house.create_image(0, 48 + 72 * i, anchor=tk.NW, image=self.middle)
             
-        house.create_image(0 , 48+72*(level), anchor=tk.NW, image=self.bottom)
+        house.create_image(0, 48 + 72 * level, anchor=tk.NW, image=self.bottom)
         house.pack()
         house.pack_forget()
         #disabled bg image
         house_disabled = tk.Canvas(house_win, width=132, height=148+level*72, bg="white")
         house_disabled.create_image(0 , 0, anchor=tk.NW, image=self.top_disabled)
         for i in range(level):
-            house_disabled.create_image(0, 48+72*(i), anchor=tk.NW, image=self.middle_disabled)
+            house_disabled.create_image(0, 48 + 72 * i, anchor=tk.NW, image=self.middle_disabled)
             
-        house_disabled.create_image(0 , 48+72*(level), anchor=tk.NW, image=self.bottom_disabled) 
+        house_disabled.create_image(0, 48 + 72 * level, anchor=tk.NW, image=self.bottom_disabled)
         house_disabled.pack()
         
         # hideLabel = tk.Label(house_win, image = self.house_image_disabled, bg="black", pady=0)
